@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>易讀程式之美學</title>
+    <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+    <meta name="author" content="Hakim El Hattab">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../reveal.js/css/reveal.css">
+    <link rel="stylesheet" href="../reveal.js/css/theme/black.css" id="theme">
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="../reveal.js/lib/css/zenburn.css">
+    <!-- Printing and PDF exports -->
+    <script>
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match(/print-pdf/gi) ? '../reveal.js/css/print/pdf.css' : '../reveal.js/css/print/paper.css';
+    document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+    <!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	<style>
+	.reveal h2 {
+		color: #fdf1c0;
+	}
+	.reveal h3 {
+		color: #f5c5b9;
+	}
+	.reveal td {
+		font-size: 30px;
+	}
+	</style>
+
+</head>
+
+<body>
+    <div class="reveal">
+        <!-- Any section element inside of this container is displayed as a slide -->
+        <div class="slides">
+            <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n">
+                <script type="text/template">
+# 第一章
+<br>
+## 程式碼應易於理解
+
+
+
+## 「更好」的意義
+
+```
+Node* node = list->head;
+if (node == NULL) return;
+
+while (node->next != NULL) {
+	Print(node->data);
+	node = node->next;
+}
+
+if (node != NULL) Print (node->data);
+```
+```
+for (Node* node = list->head; node != NULL; node = node->next)
+	Print(node->data);
+```
+
+
+## 「更好」的意義
+```
+return exponent >= 0 ? mantissa * (1 << exponent) : mantissa / (1 << -exponent);
+```
+```
+if (exponent >= 0) {
+	return mantissa * (1 << exponent);
+} else {
+	return mantissa / (1 << -exponent);	
+}
+```
+* <span class="fragment highlight-red">mantissa</span> * 2<sup><span class="fragment highlight-blue">exponent</span></sup>
+* Example <br>
+5.75 = 101.11<sub>2</sub> = <span class="fragment highlight-red">0.10111</span><sub>2</sub> * 2<sup><span class="fragment highlight-blue">3</span></sup>
+
+
+
+## 比較短的程式都比較好嗎？
+<br>
+hash = (hash <span class="fragment highlight-red"><< 6</span>) + (hash <span class="fragment highlight-red"><< 16</span>) – hash + c
+
+<span class="fragment">hash <span class="fragment highlight-red">\* 64</span> + hash <span class="fragment highlight-red">\* 65536</span> – hash + c</span>
+<br>
+<br>
+<span class="fragment">// hash = (65599 * hash) + c 的快速版</span>
+
+
+
+## 可讀性基本定理
+<br>
+<span class="fragment">撰寫程式時應將讀者理解所需的時間降到最短。</span><br>
+* 很直覺地想到什麼就寫什麼的邏輯？
+* 過度縮短程式？
+* 懶得寫註解？
+
+
+
+# 第二章
+<br>
+## 富含資訊的名稱
+
+
+
+## 選擇詞彙
+* Size()
+  * Height()
+  * NumNodes()
+  * MemoryBytes0
+
+* Stop()
+  * Kill()
+  * Pause()
+
+
+
+## 避免 tmp 與 retval 等通用名稱
+retval 只表達了「這是回傳值」，<br>應使用能說明變數值意義的名稱。
+```
+var euclidean_norm = function(v) {
+    var retval = 0.0;
+    for (var t = 0; i < v.length; i += 1)
+        retval += v[i] * v[i];
+    return Math.sqrt(retval);
+};
+```
+* sum_squares
+
+
+## 避免 tmp 與 retval 等通用名稱
+tmp 只適用於變數生命週期短，<br>且作為暫存用途的變數。
+```
+if (right < left) {
+    tmp = right;
+    right = left;
+    left = tmp;
+}
+```
+* 如何不多使用變數做swap？
+```
+a = a ^ b
+b = a ^ b
+a = a ^ b
+```
+
+
+## 避免 tmp 與 retval 等通用名稱
+迴圈循環子(iterator)
+```
+for (int i = 0; i < club.size(); i++)
+	for (int j = 0; j < clubs[i].members.size(); j++)
+		for (int k = 0; k < users.size(); k++)
+			if (clubs[i].members[k] == users[j])
+				cout << "user[" << j << "] is in club[" << j << "]" << endl;
+
+for (int club_i = 0; club_i < club.size(); club_i++)
+	for (int member_j = 0; member_j < clubs[club_i].members.size(); member_j++)
+		for (int user_k = 0; user_k < users.size(); user_k++)
+			if (clubs[club_i].members[member_j] == users[user_k])
+				cout << "user[" << member_j << "] is in club[" << club_i << "]" << endl;
+```
+* foreach ($array  as $key => $value)
+
+
+
+## 優先使用具體名稱而非抽象名稱
+* ServerCanStart()
+* CanListenServer()
+
+* DISALLOW_EVIL_CONSTRUCTORS
+* DISALLOW_COPY_AND_ASSIGN
+<br>[Copy Construster](http://coherence.pixnet.net/blog/post/48117140-copy-constructor)
+
+* --run_locally
+* --use_local_database
+
+
+
+## 在名稱中加入額外資訊
+### 單位
+```
+var start = (new Date()).getTime();
+
+...
+
+var elapsed = (new Date()).getTime() - start;
+document.writeln("Load time was: " + elapsed + "seconds");
+```
+* start_ms
+* elapsed_ms
+
+
+## 在名稱中加入額外資訊
+### 其他重要屬性
+| 情形                  | 變數名稱 | 更好的變數名稱     |
+|-----------------------|----------|--------------------|
+| 十六進位id            | id       | hex_id             |
+| 以「本文」儲存的密碼  | password | plaintext_password |
+| 轉換為UTF-8的html資料 | html     | html_utf8          |
+| 做過url編碼的資料     | data     | data_urlenc        |
+
+
+## 在名稱中加入額外資訊
+### 匈牙利命名？
+微軟的程式設計師 Charles Simonyi 所發明
+
+* bLogin
+* aFriends
+* iGarenaUid
+* sNick
+* iPhone (?)
+
+
+
+## 名稱該有多長？
+* 小範圍用短的名稱
+  * 較適合用在範圍只有數行的變數。
+  * 若橫跨數個畫面的變數，完整的名稱增加可讀性。
+
+* 排除不必要的詞彙
+  * ConvertToString()  →  ToString()
+
+
+
+## 利用名稱格式加入更多意義
+### 排版慣例
+```
+var x = new DatePicker();
+var y = pageHeight();
+```
+```
+var $all_images = $(“img”);
+var page_height = pageHeight(); 
+```
+```
+<div id=“middle_column” class=“main-content”>
+```
+
+
+
+## 結語
+* 使用特定詞彙
+* 避免通用名稱
+* 使用具體名稱
+* 在名稱中加入重要細節
+* 在較大的範圍使用較長的名稱
+* 有意義地使用大寫、底線等符號
+
+
+
+
+Thanks for your attention
+<br><br>
+Vicki Lin 
+<br>
+2015/10/26
+                </script>
+            </section>
+        </div>
+    </div>
+    <script src="../reveal.js/lib/js/head.min.js"></script>
+    <script src="../reveal.js/js/reveal.js"></script>
+    <script src="../reveal.js/plugin/highlight/highlight.js"></script>
+    <script>
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [{
+            src: 'lib/js/classList.js',
+            condition: function() {
+                return !document.body.classList;
+            }
+        }, {
+            src: '../reveal.js/plugin/markdown/marked.js',
+            condition: function() {
+                return !!document.querySelector('[data-markdown]');
+            }
+        }, {
+            src: '../reveal.js/plugin/markdown/markdown.js',
+            condition: function() {
+                return !!document.querySelector('[data-markdown]');
+            }
+        }, {
+            src: '../reveal.js/plugin/highlight/highlight.js',
+            async: true,
+            condition: function() {
+                return !!document.querySelector('pre code');
+            },
+            callback: function() {
+                hljs.initHighlightingOnLoad();
+            }
+        }, {
+            src: '../reveal.js/plugin/zoom-js/zoom.js',
+            async: true
+        }, {
+            src: '../reveal.js/plugin/notes/notes.js',
+            async: true
+        }]
+    });
+    </script>
+</body>
+
+</html>
