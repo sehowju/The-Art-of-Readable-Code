@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>易讀程式之美學 CH3-CH4</title>
+
+		<meta name="description" content="">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="../reveal.js/css/reveal.css">
+		<link rel="stylesheet" href="../reveal.js/css/theme/black.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="../reveal.js/lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? '../reveal.js/css/print/pdf.css' : '../reveal.js/css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section data-markdown 
+						data-separator="^\n\n\n" 
+						data-separator-vertical="^\n\n">
+					<script type="text/template">
+# CH3 不被誤解的名稱
+
+
+
+## 容易誤解的名稱
+
+
+### Filter()
+```
+result = Database.all_objects.filter("year <= 2015")
+```
+
+
+### Clip(text, length)
+* function的意思是？
+	1. 從結尾刪除length的長度
+	2. 只留下length的長度，切除尾端
+	<br> -> Truncate(text, length)  
+
+
+### Clip(text, length)
+* length不明確
+->  可以改成 max_length
+* 但max_length似乎還有多種意思？
+	1. 位元組數 -> max_byte
+	2. 字元數 -> max_char
+	3. 單字數 -> max_word
+
+
+
+## 包含邊界值的“極值”優先使用
+```
+CART_TOO_BIG_LIMIT = 10;
+if(shopping.cart.num_items >= CART_TOO_BIG_LIMIT) {
+	Error("Too many itms in cart");
+}
+```
+
+
+* 邊界錯誤(off-by-one bug)
+<br> -> 把 '>=' 改成 '>'
+* CART_TOO_BIG_LIMIT 此變數無法清楚知道是否有包含邊界值(此為10)
+<br> -> MAX_ITEM_IN_CART 或 MIN_ITEM_IN_CART
+
+
+
+## 封閉區間先使用first與last
+* "直到" & "直到包含邊界"? 
+<br>ex.int_range(first=2,last=4)
+<br> -> int_range(first=2,last=4)
+
+
+
+## 半開放區間優先使用begin與end
+* 列出10/16的所有事件
+```
+printEventInRange('2015-10-16 00:00:00', '2015-10-17 12:00:00')
+printEventInRange('2015-10-16 00:00:00', '2015-10-16 11:59:59')
+```
+-> printEventInRange(begin='2015-10-16 00:00:00', end='2015-10-17 12:00:00')
+
+
+
+## 布林值名稱
+* read_password
+	<br> -> need_password
+	<br> -> user_is_authenticated
+* SpaceLeft()
+	<br> -> HasSpaceLeft()
+* 避免使用否定敘述 ex.disable_ssl = false -> use_ssl = true
+
+
+
+## 符合使用者預期
+* get ”應該是輕量的存取子“ 
+* getMean() -> computeMean()
+
+
+```
+ShrinkList(list<Node>& list, int max_size) {
+	while(list.size() > max_size) {
+		FreeNode(list.back());
+		list.pop_back();
+	}
+}
+```
+* O(n)*O(n)
+* C++的size()也改為O(1)
+
+
+
+## 評估多個可用名稱
+* 複製使用的變數(experiment_id)
+	* template (X)
+	* reuse_id (..)
+	* copy_experiment (O)
+	* inherit_from_experiment_id (O) 
+
+
+
+# CH4 美學
+
+
+
+## 賞心悅目、易讀的程式碼
+* 排版一致,讓讀者習慣一致的模式
+* 調整類似程式碼有相同的外觀
+* 把相關的程式碼組織成為段落
+
+
+
+## 調整段行讓程式更加一致與簡潔
+![phase1](http://amy801101.github.io/amyisthebest/art_of_readable_code/images/phase1.jpg)
+
+
+![phase2](http://amy801101.github.io/amyisthebest/art_of_readable_code/images/phase2.jpg)
+
+
+![phase3](http://amy801101.github.io/amyisthebest/art_of_readable_code/images/phase3.jpg)
+
+
+
+## 用方法(method)消除混亂
+```
+assert(B>ExpandFullName(database_connection, "Doug Adams", &error) == "Mr. Douglas Adams")
+```
+```
+CheckFullName("Doug Adams", "Mr. Douglas Adams", "")
+```
+* 精簡程式碼
+* 清楚呈現重要部分
+* 更容易加入測試
+
+
+
+## 適當使用列對齊
+```
+CheckFullName("Doug Adams", "Mr. Douglas Adams", "")
+CheckFullName("    Doug Adams    ", " Mr. Douglas Adams ", "")
+CheckFullName("Doug Adams"    ,     " Mr. Douglas Adams ", "")
+```
+* 但有些人不喜歡列對齊
+
+
+
+## 選擇有意義的順序並堅守到底
+* 雖然順序不影響正確性，但有意義的排序會有所助益:
+	1. details
+	2. location
+	3. phone 
+	4. email
+	5. url
+<br>對應到form的順序
+
+
+
+## 將宣告的部分組織為多個區塊
+```
+//Handlers
+...
+//Request/Reply Utilities
+...
+//Database Helpers
+...
+```
+
+
+
+## 區分程式碼“段落”
+```
+//Get users' friends' email
+...
+//Import all emails
+...
+//Show all the emails
+...
+```
+
+
+
+## 個人風格與一致性
+```
+class Logger {
+	
+}
+```
+```
+class Logger 
+{
+	
+}
+```
+					</script>
+				</section>
+
+			</div>
+
+		</div>
+
+		<script src="../reveal.js/lib/js/head.min.js"></script>
+		<script src="../reveal.js/js/reveal.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: '../reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: '../reveal.js/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: '../reveal.js/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: '../reveal.js/plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: '../reveal.js/plugin/zoom-js/zoom.js', async: true },
+					{ src: '../reveal.js/plugin/notes/notes.js', async: true }
+				]
+			});
+
+			$(function(){
+				//this is not working
+				$('code').addClass('hljs markdown');
+				console.log('code add hljs mardown1');
+			});
+
+			$(window).load(function(){
+
+				$('code').addClass('hljs markdown');
+				console.log('code add hljs mardown2');
+			})
+		</script>
+
+	</body>
+</html>
