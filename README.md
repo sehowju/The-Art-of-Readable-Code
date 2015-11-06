@@ -1,4 +1,4 @@
-# dinoistheboss
+# Dino is The Boss
 http://dinoistheboss.github.io
 
 ## 讀書會
