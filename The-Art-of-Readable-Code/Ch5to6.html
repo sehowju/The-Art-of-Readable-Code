@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>易讀程式之美學</title>
+    <meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+    <meta name="author" content="Hakim El Hattab">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="../reveal.js/css/reveal.css">
+    <link rel="stylesheet" href="../reveal.js/css/theme/black.css" id="theme">
+    <!-- Code syntax highlighting -->
+    <link rel="stylesheet" href="../reveal.js/lib/css/zenburn.css">
+    <!-- Printing and PDF exports -->
+    <script>
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match(/print-pdf/gi) ? '../reveal.js/css/print/pdf.css' : '../reveal.js/css/print/paper.css';
+    document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+    <!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	<style>
+	.reveal h2 {
+		color: #fdf1c0;
+	}
+	.reveal h3 {
+		color: #f5c5b9;
+	}
+	.reveal td {
+		font-size: 30px;
+	}
+	</style>
+
+</head>
+
+<body>
+    <div class="reveal">
+        <!-- Any section element inside of this container is displayed as a slide -->
+        <div class="slides">
+            <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n">
+                <script type="text/template">
+# 第五章
+<br>
+## 認識註解
+
+
+
+## 1. 不該註解的部分
+
+```
+// Account 的類別定義
+class Account {
+    public:
+    // 建構子
+    Account();
+    // 將 profit 成員設為新值
+    void SetProfit(double profit);
+
+    // 傳回這個 Account 的 profit
+    double GetProfit();
+};
+```
+<span class="fragment highlight">不要註解那些能快從程式碼中知道的事實</span>
+
+
+## 1.1 不要為了註解而註解
+```
+// 在給定的 subtree 找尋指定的 name ，最多照到 depth 層
+Node* FindNodeInSubtree(Node* subtree, string name, int depth);
+```
+<br>
+=> 解釋更多實作細節
+```
+// 找出有指定 'name' 的 Node 物件或是傳回 NULL 值
+// 如果 depth <= 0 , 只會檢查 'subtree'
+// 如果 depth == N , 只會檢查 'subtree' 以及 N 層內的節點 
+Node* FindNodeInSubtree(Node* subtree, string name, int depth);
+```
+
+
+## 1.2 不要註解不好的名稱 - 直接修正名稱 (1/2)
+```
+// 強制在 Replay 加上 Request 中指定的限制
+// 如回傳的項目數量或是總位元組數等等
+void CleanReplay(Request request, Replay replay);
+```
+<br>
+```
+// 確保 'replay' 符合 'request' 中指定的數量/位元組/其他限制
+void EnforceLimitsFromRequest(Request request, Replay replay);
+```
+<br>
+<span class="fragment highlight">
+好的名稱會一再出現在使用函數的位置，<br>
+比起好的註解更加重要。
+</span>
+
+
+## 1.2 不要註解不好的名稱 - 直接修正名稱 (2/2)
+```
+// 釋放 key 對應的 handle，並不會影響實際上的 registry
+void DeleteRegistry(RegistryKey* Key);
+```
+<br>
+```
+void ReleaseRegistryHandle((RegistryKey* Key);
+```
+<br>
+<span class="fragment highlight">「好程式 > 壞程式 + 好註解」</span>
+
+
+
+## 2. 記錄自己的想法
+<br>
+記下寫程式時重要的想法
+
+
+## 2.1 導演評註
+```
+// 很意外地，對這些資料來說二元樹比雜湊表快了40%，
+// 計算雜湊的成本比左/右來得高
+```
+
+```
+// 啟發式計算(heuristic)可能會漏幾個字，但沒什麼關係，很難 100% 解決。
+```
+<br>
+解釋程式碼程式碼狀況不好的原因
+```
+// 這個類別很亂，也許應該建立 'ResourceNode' 子類別，
+// 讓架構更清楚
+```
+
+
+## 2.2 註解程式碼的缺陷
+
+|標記   |意義                 |
+|-------|---------------------|
+|TODO:  |作者還沒處理的部分   |   
+|FIXME: |已知的問題           |   
+|HACK:  |承認解決方法不夠優雅 |
+|XXX:   |危險!重要問題        |
+
+```
+// TODO:改用更快的演算法
+```
+
+
+## 2.3 常數的註解
+調整常數值的指引
+```
+NUM_THREADS = 8 #只要 >=2 * num_processors 就夠好了
+```
+```
+// 加上合理的限制-沒有人能讀這麼多文章
+const int MAX_RSS_SUBSCRIPTIONS = 1000;
+```
+不應該變動
+```
+// 使用者認為 0.72 在大小/品質上有最好的平衡
+image_quality = 0.72
+```
+
+
+
+## 3. 為讀者設想
+### 3.1 預期可能出現的問題
+```
+struct Recorder {
+    vector<float> data;
+    ...
+    void Clear() {
+        vector<float>().swap(data); //嗯?為什麼不是用 data.clear()?
+    }
+ };
+```
+
+```
+// 強制釋放記憶體(參看STL swap trick)
+vector<float>().swap(data);
+```
+
+
+### 3.2 註解可能的陷阱
+
+實體細節
+```
+// 呼叫外部服務發送 email (逾時時間為 1 分鐘)
+void SendEmial(string to, string subject, string body);
+```
+```
+//執行時間為 o(number_tags * average_depth)，要注意太糟的輸入值
+def FixBrokenHtml(html):..
+```
+
+
+### 3.3 全局的註解
+
+* 類別互動方式
+* 資料流
+* 進入點位置
+
+```
+// 本檔案內容是輔助，為檔案系統提供較為方便的介面
+// 處理檔案權限以及其他基礎細節
+```
+<span class="fragment highlight">簡單幾句話比一片空白來得好</span>
+
+
+### 3.4 摘要註解
+
+```
+# 找出所有為自己購買商品的客戶
+for customer_id in all_customers:
+    for sale in all_sales[customer_id].sales:
+        if sale.recipient == customer_id;
+            ...
+```
+
+```
+def GenerateUserReport():
+    # 取得使用者的鎖 (lock)
+    ...
+    # 從資料庫讀取使用者資訊
+    ...
+    # 將資訊寫入檔案
+    ...
+    # 釋放使用者的鎖
+    ...
+```
+
+
+
+## 4. 最後-避免寫作抗拒
+1. 寫下當時心中的想法。
+2. 讀出註解，看看是否需要修正與改善。
+3. 改善。
+
+ex. 天啊，如果串列裡出現重複，情況就會十分棘手<br>
+* 天啊  -> 注意，要特別小心
+* 情況  -> 處理輸入資料的程式碼
+* 很棘手 -> 很難實作
+<br>
+=>注意，程式碼無法處理串列中的重複(因為太難實作) 
+
+
+
+# 第六章
+<br>
+讓註解精確與簡潔<br>
+<span class="fragment highlight">註解應該要有高資訊空間比</span>
+
+
+
+## 1. 維持註解簡潔
+
+```
+// int 是 CategoryType
+// pair 中的第一個 float 是 "score",
+// 第二個 float 則是 "權重"
+typedef hash_map<int, pair<float, float>>ScoreMap; 
+``` 
+=>
+```
+// CategoryType -> (score, weight)
+typedef hash_map<int, pair<float, float>>ScoreMap; 
+```
+
+
+
+## 2. 避免模稜兩可的代名詞
+
+它、這個 意義不明確
+```
+// 將資料插入串列，並會先檢查 它 是否過大 
+```
+=>
+```
+// 將資料插入串列，並先檢查 資料 是否過大
+```
+重組句子，是其意義更明確
+```
+// 如果資料夠小，就將它插入串列中
+```
+
+
+
+## 3. 修整草率的語句
+
+修改註解更為精確會讓註解更加簡潔
+```
+# 根據是否已經爬過這個 URL，給予不同的優先權
+```
+=>
+```
+# 給予不曾爬過的 URL 較高的優先權
+```
+
+
+
+## 4. 精確描述函數行為
+
+```
+// 傳回這個檔案的行數
+int CountLines(string filenae) { ... }
+```
+* ""(空檔案) - 0 或 1 行 ?
+* "hello" - 0 或 1 行 ?
+* "hello\n" - 1 或 2 行 ?
+* "hello\n world" - 1 或 2 行 ?
+* "hello\n\r cruel\n world\r" - 2、3 或 4 行 ?
+
+```
+// 計算檔案中的換行位元個數('\n')
+int CountLines(string filenae) { ... }
+```
+
+
+
+## 5. 使用具代表性的輸入 / 輸出範例
+```
+// 從輸入字串  'src' 中移除 'chars' 字首/字尾
+String Strip(String src, String chars){ ... }
+```
+* chars 是會被移除的子字串，或只是個沒有特定順序的字元集合?
+* 如果 src 的結尾有多組 chars 重複出現會如何?
+
+=> 展示。太過簡單的例子沒有太大幫助
+```
+// ...
+// 範例: Strip("abaa/a/ba", "ab") 傳回"/a/"
+String Strip(String src, String chars){ ... }
+```
+
+
+
+## 6. 函數參數名稱的註解
+
+```
+Connect(10, false);
+```
+Python
+```
+def Connect(timeout, use_encryption):...
+# 使用參數名稱呼叫函數
+Connect(timeout = 10, use_encryption = false)
+```
+C++ Java
+```
+void Connect(int timeout, bool use_encryption) { ... }
+// 利用加上註解的參數呼叫函數
+Connect(/* timeout = */ 10, /* use_encryption = */ false);
+```
+
+
+
+## 7. 使用訊息密集的詞彙
+```
+// 這個類別包含幾個的成員，這些成員儲存的資訊與資料庫相同
+// 但為了速度的關係而儲存於記憶體，當後續讀取這個類別時，
+// 會先檢查這些成員是否存在，如果存在就傳回成員中的內容；
+// 否則，就讀取資料庫，並儲存資訊供後續使用
+```
+
+=>
+
+```
+// 這個類別是資料庫的 cache layer
+```
+
+
+
+Thanks for your attention
+<br><br>
+Birdy Yang
+<br>
+2015/11/09
+                </script>
+            </section>
+        </div>
+    </div>
+    <script src="../reveal.js/lib/js/head.min.js"></script>
+    <script src="../reveal.js/js/reveal.js"></script>
+    <script src="../reveal.js/plugin/highlight/highlight.js"></script>
+    <script>
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+        // Optional reveal.js plugins
+        dependencies: [{
+            src: 'lib/js/classList.js',
+            condition: function() {
+                return !document.body.classList;
+            }
+        }, {
+            src: '../reveal.js/plugin/markdown/marked.js',
+            condition: function() {
+                return !!document.querySelector('[data-markdown]');
+            }
+        }, {
+            src: '../reveal.js/plugin/markdown/markdown.js',
+            condition: function() {
+                return !!document.querySelector('[data-markdown]');
+            }
+        }, {
+            src: '../reveal.js/plugin/highlight/highlight.js',
+            async: true,
+            condition: function() {
+                return !!document.querySelector('pre code');
+            },
+            callback: function() {
+                hljs.initHighlightingOnLoad();
+            }
+        }, {
+            src: '../reveal.js/plugin/zoom-js/zoom.js',
+            async: true
+        }, {
+            src: '../reveal.js/plugin/notes/notes.js',
+            async: true
+        }]
+    });
+    </script>
+</body>
+
+</html>
