@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>CHAPTER 7-8</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+
+				<section data-markdown 
+					 data-separator="^\n\n\n"  
+         				 data-separator-vertical="^\n\n">
+					##Chapter7
+					##提高控制流程可讀性
+					
+					
+					
+					###重要概念
+					讓所有的條件判斷、迴圈與其他改變流程的敘述"盡量自然" 
+					--用不需要使用者停下來重讀的方式撰寫程式碼
+					
+					
+					
+					###條件式中的流程順序(1/2)
+					<pre><code>
+							if (length >= 10)
+					</code></pre>
+					或
+					<pre><code>
+							if (10 <= length)
+					</code></pre>
+					
+					###條件式中的流程順序(2/2)
+					<pre><code>
+							while (byte_received < byte_expected)
+					</code></pre>
+					或
+					<pre><code>
+							while (byte_expected > byte_received)
+					</code></pre>
+					
+					左側|右側
+					------------- | --------------
+					代表比較對象|代表比較基準
+					數值較有變化|數值大多是固定常數
+					
+					
+					###尤達表示法
+					
+					為了避免
+					<pre><code>
+						if ($obj = null)
+					</code></pre>
+					所以改成
+					<pre><code>
+						if (null == $obj)
+					</code></pre>
+					_現代編譯器都會產生警告?_
+					
+					
+					
+					###if/else區塊順序
+					* 先處理肯定條件
+					* 先處理簡單的情況
+					* 先處理比較有趣或明顯的情況
+					
+					
+					###要你不要想"粉紅色大象"!
+					<pre><code>
+						if (uri.HasQueryParameter("expand_all") != true) {
+							response.Render(items);
+						} else {
+							for (int i = 0; i < item.size() ; i++) {
+								item[i].Expand();
+							}
+						}
+					</code></pre>
+					
+					### 先處理簡單的情況
+					<pre><code>
+						if (!is_login) {
+							// not login
+						}
+						else {
+							// do  something
+						}
+					</code></pre>
+					
+					
+					
+					###避免 do/while 迴圈
+					<pre><code>
+						// 從 node 開始搜尋，尋找指定的 name
+						// 不考慮大於 max_length 之後的節點
+						public boolean ListHasNode(Node node, String name, int max_length) {
+							do {
+								if (node.name().equals(name))
+									return true;
+								node = node.next();
+							} while (node != null && --max_length > 0);
+							
+							return false;
+						}
+					</code></pre>
+					
+					###為了避免 do/while 
+					<pre><code>
+						body
+						
+						while (condition) {
+							body again
+						}
+					</code></pre>
+					蠢
+					
+					
+					###多數 do/while 可以改成 while
+					<pre><code>
+						public boolean ListHasNode(Node node, String name, int max_length) {
+							while (node != null && max_length-- > 0) {
+								if (node.name().equals(name))	return true;
+								node = node.next();
+							}
+							return false;
+						}
+					</code></pre>
+					
+					
+					###避免在 do/while 裡面用 continue
+					<pre><code>
+						do {
+							continue;
+						} while (false);
+					</code></pre>
+					
+					
+					###儘早由函數中返回
+					<pre><code>
+						public boolean Contains(String str, String substr) {
+							if (str == null || substr == null) return false;
+							if (substr.equals("")) return true;
+						}
+					</code></pre>
+					
+					###減少巢狀結構
+					<pre><code>
+						if (user_result == SUCCESS) {
+							if (permission_result != SUCCESS) {
+								reply.WriteErrors("error reading permissions");
+								reply.Done();
+								return;
+							}
+							reply.WriteErrors("");
+						} else {
+							reply.WriteErrors(user_result);
+						}
+						reply.Done();
+					</code></pre>
+					
+					###用儘早返回函數消除巢狀結構
+					<pre><code>
+						if (user_result != SUCCESS) {
+							reply.WriteErrors(user_result);
+							reply.Done();
+							return;
+						}
+						
+						if (permission_result != SUCCESS) {
+							reply.WriteErrors(permission_result);
+							reply.Done();
+							return;
+						}
+						
+						reply.WriteErrors("");
+						reply.Done();
+					</code></pre>
+					
+					###消除迴圈中的巢狀結構
+					<pre><code>
+						for (int i=0; i < result.size();i++) {
+							if(result[i] != NULL) {
+								non_null_count++;
+								if (result[i]->name != "") {
+									cout << "Considering candidate.."<<endl;
+									
+									...
+								}
+							}
+						}
+					</code></pre>
+					
+					###用continue去解
+					<pre><code>
+						for (int i=0; i < result.size();i++) {
+							if(result[i] == NULL) continue;
+							non_null_count++;
+							
+							if (result[i]->name == "") continue;
+							cout << "Considering candidate.."<<endl;
+							
+							...
+						}
+					</code></pre>
+					
+					
+					###Chapter 7 結語
+					* 比較時，最好將會變動的數直放左側，固定不變得放右側
+					* if/else順序: 先處理肯定/容易/有趣
+					* 盡可能減少巢狀結構
+					
+					
+					
+					##Chapter 8
+					##分解巨大表示式
+					
+					
+					###解釋性變數 (explaining variable)
+					<pre><code>
+						if (line.split(':')[0].strip() == "root")
+						
+						
+						
+						user_name = line.split(':')[0].strip();
+						if (user_name == "root")
+					</code></pre>
+					
+					
+					###摘要變數 (summary variable) (1/2)
+					<pre><code>
+						if (request.user.id == document.owned_id) {
+							// 使用者可以編輯
+						}
+						
+						...
+						if (request.user.id != document.owned_id) {
+							// 文件狀態是唯讀
+						}
+					</code></pre>
+					
+					###摘要變數 (summary variable) (2/2)
+					<pre><code>
+						final boolean user_owns_document = (request.user.id == document.owned_id);
+						
+						if (user_owns_document) {
+							// 使用者可以編輯
+						}
+						
+						...
+						if (user_owns_document) {
+							// 文件狀態是唯讀
+						}
+					</code></pre>
+					
+					
+					
+					###利用笛摩根定律 (De Morgan's law)
+					1. not (a or b or c) <=> (not a) and (not b) and (not c)
+					2. not (a and b and c) <=> (not a) or (not b) or (not c)
+					<pre><code>
+							if(!(file_exists && !is_protected)) {
+								Error("Sorry, could not read file");
+							}
+					</code></pre>
+					v.s.
+					<pre><code>
+							if(!file_exists || is_protected) {
+								Error("Sorry, could not read file");
+							}
+					</code></pre>
+					
+					
+					
+					###誤用捷徑邏輯
+					<pre><code>
+						assert((!(bucket = Findbucket(key))) || !bucket->IsOccupied)
+					</code></pre>
+					v.s.
+					<pre><code>
+						bucket = Findbucket(key);
+						if (bucket != NULL) assert(!bucket->IsOccupied());
+					</code></pre>
+					
+					
+					###與複雜邏輯搏鬥
+					<pre><code>
+						struct Range{
+							int begin;
+							int end;
+							bool OverlapsWith(Range other);
+						};
+					</code></pre>
+					![Image of Overlaps](http://www.codeproject.com/KB/cs/DateRangeOverlapTesting/range_problem.jpg)
+					
+					
+					###實作OverlapsWith--檢查兩個段點是否位於other的範圍中
+					<pre><code>
+						bool Range::OverlapsWith(Range other) {
+							return (begin >= other.begin && begin < other.begin) ||
+							       (end < other.begin && end <= other.end) ||
+							       (begin <= other.begin && end >= other.end);
+						}
+					</code></pre>
+					
+					###從"相反方向解決問題"
+					<pre><code>
+						bool Range::OverlapsWith(Range other) {
+							if (other.end <= begin) return false; // 他們在我們開始之前就結束
+							if (other.begin >= end) return false; // 他們在我們結束之後才開始
+							
+							return true;
+						}
+					</code></pre>
+					
+					
+					###分解巨大的敘述(1/2)
+					<pre><code>
+						void update_highlight = function (message_num) {
+							if ($("#vote_value" + message_num).html() === "Up") {
+								$("#thumbs_up" + message_num).addClass("highlighted");
+								$("#thumbs_down" + message_num).removeClass("highlighted");
+							} else if ($("#vote_value" + message_num).html() === "Down") {
+								$("#thumbs_up" + message_num).removeClass("highlighted");
+								$("#thumbs_down" + message_num).addClass("highlighted");
+							} else {
+								$("#thumbs_up" + message_num).removeClass("highlighted");
+								$("#thumbs_down" + message_num).removeClass("highlighted");	
+							}
+						}
+					</code></pre>
+					
+					###分解巨大的敘述(1/2)
+					<pre><code>
+						void update_highlight = function (message_num) {
+							var thumbs_up = $("#thumbs_up" + message_num);
+							var thumbs_down = $("#thumbs_down" + message_num);
+							var vote_value = $("#vote_value" + message_num).html();
+							var hi = "highlighted";
+							
+							if (vote_value === "Up") {
+								thumbs_up.addClass(hi);
+								thumbs_down.removeClass(hi);
+							} else if (vote_value === "Down") {
+								thumbs_up.removeClass(hi);
+								thumbs_down.addClass(hi);
+							} else {
+								thumbs_up.removeClass(hi);
+								thumbs_down.removeClass(hi);	
+							}
+						}
+					</code></pre>
+					
+					
+					###Chapter 8 結語
+					* 解釋性變數好處
+						* 分解巨大的表示式
+						* 以有意義的名稱作為程式碼的說明
+					* 笛摩根定律
+					* 反轉問題或是考慮相反的目標
+				</section>
+
+
+			</div>
+
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// Optional reveal.js plugins
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
