@@ -13,6 +13,11 @@
 		<!-- Code syntax highlighting -->
 		<link rel="stylesheet" href="../reveal.js/lib/css/zenburn.css">
 		<!-- Printing and PDF exports -->
+		<link rel="stylesheet" href="../reveal.js/css/reveal.css">
+		<link rel="stylesheet" href="../reveal.js/css/theme/black.css" id="theme">
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="../reveal.js/lib/css/zenburn.css">
+		<!-- Printing and PDF exports -->
 		<script>
 		var link = document.createElement('link');
 		link.rel = 'stylesheet';
@@ -36,6 +41,7 @@
 				<section data-markdown 
 					 data-separator="^\n\n\n"  
          				 data-separator-vertical="^\n\n">
+					<script type="text/template">
 					##Chapter7
 					##提高控制流程可讀性
 					
@@ -48,13 +54,13 @@
 					
 					
 					###條件式中的流程順序(1/2)
-					<pre><code>
+					
 							if (length >= 10)
-					</code></pre>
+					
 					或
-					<pre><code>
+					
 							if (10 <= length)
-					</code></pre>
+					
 					
 					###條件式中的流程順序(2/2)
 					<pre><code>
@@ -64,6 +70,7 @@
 					<pre><code>
 							while (byte_expected > byte_received)
 					</code></pre>
+					
 					
 					左側|右側
 					------------- | --------------
@@ -102,6 +109,7 @@
 						}
 					</code></pre>
 					
+					
 					### 先處理簡單的情況
 					<pre><code>
 						if (!is_login) {
@@ -129,14 +137,15 @@
 						}
 					</code></pre>
 					
+					
 					###為了避免 do/while 
-					<pre><code>
+					
 						body
 						
 						while (condition) {
 							body again
 						}
-					</code></pre>
+					
 					蠢
 					
 					
@@ -160,6 +169,7 @@
 					</code></pre>
 					
 					
+					
 					###儘早由函數中返回
 					<pre><code>
 						public boolean Contains(String str, String substr) {
@@ -167,6 +177,7 @@
 							if (substr.equals("")) return true;
 						}
 					</code></pre>
+					
 					
 					###減少巢狀結構
 					<pre><code>
@@ -182,6 +193,7 @@
 						}
 						reply.Done();
 					</code></pre>
+					
 					
 					###用儘早返回函數消除巢狀結構
 					<pre><code>
@@ -201,6 +213,7 @@
 						reply.Done();
 					</code></pre>
 					
+					
 					###消除迴圈中的巢狀結構
 					<pre><code>
 						for (int i=0; i < result.size();i++) {
@@ -214,6 +227,7 @@
 							}
 						}
 					</code></pre>
+					
 					
 					###用continue去解
 					<pre><code>
@@ -240,6 +254,7 @@
 					##分解巨大表示式
 					
 					
+					
 					###解釋性變數 (explaining variable)
 					<pre><code>
 						if (line.split(':')[0].strip() == "root")
@@ -249,6 +264,7 @@
 						user_name = line.split(':')[0].strip();
 						if (user_name == "root")
 					</code></pre>
+					
 					
 					
 					###摘要變數 (summary variable) (1/2)
@@ -262,6 +278,7 @@
 							// 文件狀態是唯讀
 						}
 					</code></pre>
+					
 					
 					###摘要變數 (summary variable) (2/2)
 					<pre><code>
@@ -307,6 +324,7 @@
 					</code></pre>
 					
 					
+					
 					###與複雜邏輯搏鬥
 					<pre><code>
 						struct Range{
@@ -327,6 +345,7 @@
 						}
 					</code></pre>
 					
+					
 					###從"相反方向解決問題"
 					<pre><code>
 						bool Range::OverlapsWith(Range other) {
@@ -336,6 +355,7 @@
 							return true;
 						}
 					</code></pre>
+					
 					
 					
 					###分解巨大的敘述(1/2)
@@ -353,6 +373,7 @@
 							}
 						}
 					</code></pre>
+					
 					
 					###分解巨大的敘述(1/2)
 					<pre><code>
@@ -376,12 +397,14 @@
 					</code></pre>
 					
 					
+					
 					###Chapter 8 結語
 					* 解釋性變數好處
 						* 分解巨大的表示式
 						* 以有意義的名稱作為程式碼的說明
 					* 笛摩根定律
 					* 反轉問題或是考慮相反的目標
+					</script>
 				</section>
 
 
@@ -389,53 +412,52 @@
 
 		</div>
 
-		<script src="../reveal.js/lib/js/head.min.js"></script>
-    		<script src="../reveal.js/js/reveal.js"></script>
-    		<script src="../reveal.js/plugin/highlight/highlight.js"></script>
-
-		<script>
-		    // Full list of configuration options available at:
-		    // https://github.com/hakimel/reveal.js#configuration
-		    Reveal.initialize({
-		        controls: true,
-		        progress: true,
-		        history: true,
-		        center: true,
-		        transition: 'slide', // none/fade/slide/convex/concave/zoom
-		        // Optional reveal.js plugins
-		        dependencies: [{
-		            src: 'lib/js/classList.js',
-		            condition: function() {
-		                return !document.body.classList;
-		            }
-		        }, {
-		            src: '../reveal.js/plugin/markdown/marked.js',
-		            condition: function() {
-		                return !!document.querySelector('[data-markdown]');
-		            }
-		        }, {
-		            src: '../reveal.js/plugin/markdown/markdown.js',
-		            condition: function() {
-		                return !!document.querySelector('[data-markdown]');
-		            }
-		        }, {
-		            src: '../reveal.js/plugin/highlight/highlight.js',
-		            async: true,
-		            condition: function() {
-		                return !!document.querySelector('pre code');
-		            },
-		            callback: function() {
-		                hljs.initHighlightingOnLoad();
-		            }
-		        }, {
-		            src: '../reveal.js/plugin/zoom-js/zoom.js',
-		            async: true
-		        }, {
-		            src: '../reveal.js/plugin/notes/notes.js',
-		            async: true
-		        }]
-		    });
-		    </script>
+	<script src="../reveal.js/lib/js/head.min.js"></script>
+    <script src="../reveal.js/js/reveal.js"></script>
+    <script src="../reveal.js/plugin/highlight/highlight.js"></script>
+    <script>
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Optional reveal.js plugins
+        dependencies: [{
+            src: 'lib/js/classList.js',
+            condition: function() {
+                return !document.body.classList;
+            }
+        }, {
+            src: '../reveal.js/plugin/markdown/marked.js',
+            condition: function() {
+                return !!document.querySelector('[data-markdown]');
+            }
+        }, {
+            src: '../reveal.js/plugin/markdown/markdown.js',
+            condition: function() {
+                return !!document.querySelector('[data-markdown]');
+            }
+        }, {
+            src: '../reveal.js/plugin/highlight/highlight.js',
+            async: true,
+            condition: function() {
+                return !!document.querySelector('pre code');
+            },
+            callback: function() {
+                hljs.initHighlightingOnLoad();
+            }
+        }, {
+            src: '../reveal.js/plugin/zoom-js/zoom.js',
+            async: true
+        }, {
+            src: '../reveal.js/plugin/notes/notes.js',
+            async: true
+        }]
+    });
+    </script>
 
 	</body>
 </html>
