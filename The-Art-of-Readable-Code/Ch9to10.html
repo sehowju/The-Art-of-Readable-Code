@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+
+        <title>CHAPTER 9-10</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+        <link rel="stylesheet" href="../reveal.js/css/reveal.css">
+        <link rel="stylesheet" href="../reveal.js/css/theme/black.css" id="theme">
+        <!-- Code syntax highlighting -->
+        <link rel="stylesheet" href="../reveal.js/lib/css/zenburn.css">
+        <!-- Printing and PDF exports -->
+        <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? '../reveal.js/css/print/pdf.css' : '../reveal.js/css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+        </script>
+
+        <!--[if lt IE 9]>
+        <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+
+        <div class="reveal">
+
+            <!-- Any section element inside of this container is displayed as a slide -->
+            <div class="slides">
+
+                <section data-markdown data-separator="^\n\n\n" data-separator-vertical="^\n\n">
+                <script type="text/template">
+# 第九章
+## 變數與可讀性
+
+> 自其變者而觀之，則天地曾不能以一瞬；自其不變者而觀之，則物與我皆無盡也。─蘇軾《前赤璧賦》
+
+
+
+## 問題
+
+* 變數愈多愈難記住所有變數
+* 變數存活的範圍愈大，就必須記得愈久。
+* 變數愈常改變，愈難記得目前的數值
+
+
+
+## Solution
+
+* 消除變數
+* 縮限變數範圍
+* 儘量使用只寫入一次的變數
+
+
+
+## 消除變數
+
+消除對可讀性沒有幫助的變數
+
+
+### 不必要的暫存變數
+
+```
+now = datetime.datetime.now()
+root_message.last_view_time = now
+```
+
+```
+root_message.last_view_time = datetime.datetime.now()
+```
+
+
+### 消除中間結果
+
+**index_to_remove**
+
+```
+var remove_one = function(array, value_to_remove) {
+    var index_to_remove = null;
+    for (var i = 0; i < array.length; i += 1) {
+        if (array[i] === value_to_remove) {
+            index_to_remove = i;
+            break;
+        }
+    }
+    if (index_to_remove !== null) {
+        array.splice(index_to_remove, 1);
+    }
+};
+
+```
+
+
+```
+var remove_one = function(array, value_to_remove) {
+    for (var i = 0; i < array.length; i += 1) {
+        if (array[i] === value_to_remove) {
+            array.splice(i, 1);
+            return;
+        }
+    }
+};
+```
+
+**儘快完成工作**是個好習慣。
+
+
+### 消除控制流程變數
+
+結構化程式設計
+
+```
+boolean done = false;
+while ( /* condition */ && !done) {
+    ...
+    if(...) {
+        done = true;
+        continue;
+    }
+}
+```
+
+```
+while ( /* condition */ ) {
+    ...
+    if(...) {
+        break;
+    }
+}
+```
+
+
+### 小結
+
+你想讓同事覺得一直在面試嗎？
+好的面試問題必須至少包括三個變數，也許是因為同時處理三個變數會讓人必須認真思考！
+
+
+
+## 縮限變數範圍
+
+* 避免使用全域變數
+* 對所有變數縮限範圍
+* 儘可能減少可以看到變數的程式碼行數
+
+
+### 退化變數範圍
+
+```
+class LargeClass {
+    string str_;
+    void Method1() {
+        str_ = ...;
+        Method2();
+    }
+    void Method2() {
+        // 使用 str_
+    }
+    // 其他許多不會用到 str_ 的方法
+};
+```
+
+```
+class LargeClass {
+    void Method1() {
+        string str = ...;
+        Method2(str);
+    }
+    void Method2(string str) {
+        // 使用 str
+    }
+    // 現在其他方法看不到 str
+};
+
+```
+
+
+### 結論
+* 儘量使用靜態方法 (static method)
+  * 這些程式碼與成員變數無關
+
+* 將大類別分解為較小的類別
+  * 分解大檔案成為小的檔案
+  * 分解大函數為小的函數
+
+
+### 變數可視範圍
+
+```
+// javascript
+submitted = false; // 全域變數
+var submit_form = function(form_name) {
+    if (submitted) {
+        return; // 避免重複送出表單
+    }
+    ...
+    submitted = true;
+};
+```
+
+```
+// Closure
+var submit_form = (function() {
+    var submitted = false; // 只能被以下函數使用
+    return function(form_name) {
+        if (submitted) {
+            return; // 免重複送出表單
+        }
+        ...
+        submitted = true;
+    };
+}());
+```
+
+
+#### 補充：javascript 匿名函數
+
+```
+(function () { //匿名函數
+
+function log(msg) {
+    console.log(msg);
+}
+
+// 其他代碼
+}()); //立即執行
+```
+
+[INTEL® DEVELOPER ZONE](https://software.intel.com/sites/landingpage/tw/android2.php)
+
+
+### 全域範圍
+
+```
+var f = function() {
+    // 危險，宣告 'i'　時沒有使用 'var'！
+    for (i = 0; i < 10; i += 1) ...
+};
+f();
+```
+
+```
+alert(i); // Alerts '10'. 'i' 是全域變數！
+```
+
+**總是使用 var 宣告變數**
+
+
+### 巢狀範圍
+
+Python 與 Javascript 沒有巢狀範圍 (Php 也是)
+
+```
+if (...) {
+    int x = 1;
+}
+x++; // 編譯錯誤！ 'x' 未定義
+```
+
+
+example_value
+
+```
+# 之前都沒有使用 example_value
+if request:
+    for value in request.values:
+        if value > 0:
+            example_value = value
+            break
+
+for logger in debug.loggers:
+    logger.log("Example:", example_value)
+
+```
+
+```
+example_value = None
+if request:
+    for value in request.values:
+        if value > 0:
+            example_value = value
+            break
+
+if example_value:
+    for logger in debug.loggers:
+        logger.log("Example:", example_value)
+```
+
+
+#### 重構
+
+```
+example_value = None
+if request:
+    for value in request.values:
+        if value > 0:
+            example_value = value
+            break
+
+if example_value:
+    for logger in debug.loggers:
+        logger.log("Example:", example_value)
+```
+
+```
+def LogExample(value):
+    for logger in debug.loggers:
+        logger.log("Example:", value)
+
+if request:
+    for value in request.values:
+        if value > 0:
+            LogExample(value)  # 立刻處理 'value'
+            break
+```
+
+
+## 下移宣告
+
+```
+def ViewFilteredReplies(original_id):
+    filtered_replies = []
+    root_message = Messages.objects.get(original_id)
+    all_replies = Messages.objects.select(root_id = original_id)
+
+    root_message.view_count += 1
+    root_message.last_view_time = datetime.datetime.now()
+    root_message.save()
+
+    for reply in all_replies:
+        if reply.spam_votes <= MAX_SPAM_VOTES:
+            filtered_replies.append(reply)
+
+    return filtered_replies
+```
+
+
+## 下移宣告
+
+```
+def ViewFilteredReplies(original_id):
+    root_message = Messages.objects.get(original_id)
+    root_message.view_count += 1
+    root_message.last_view_time = datetime.datetime.now()
+    root_message.save()
+
+    all_replies = Messages.objects.select(root_id = original_id)
+    filtered_replies = []
+
+    for reply in all_replies:
+        if reply.spam_votes <= MAX_SPAM_VOTES:
+        filtered_replies.append(reply)
+
+return filtered_replies
+```
+
+Think about *all_replies* ?
+
+```
+for reply in Messages.objects.select(root_id=original_id):
+```
+
+
+
+## 偏好單次寫入的變數
+
+* 儘量使用單次寫入變數
+
+```
+static const int NUM_THREADS = 10;
+```
+
+* 不可變一般來說比較不會造成問題
+* 操作變數的地方愈多，愈難記得變數目前的數值
+
+
+
+## 範例
+
+```
+<input type="text" id="input1" value="Dustin">
+<input type="text" id="input2" value="Trevor">
+<input type="text" id="input3" value="">
+<input type="text" id="input4" value="Melissa">
+```
+
+var found, i, elem;
+
+```
+var setFirstEmptyInput = function(new_value) {
+    var found = false;
+    var i = 1;
+    var elem = document.getElementById('input' + i);
+    while (elem !== null) {
+        if (elem.value === '') {
+            found = true;
+            break;
+        }
+        i++;
+        elem = document.getElementById('input' + i);
+    }
+    if (found) elem.value = new_value;
+    return elem;
+};
+```
+
+
+* var found
+
+```
+var setFirstEmptyInput = function(new_value) {
+    var i = 1;
+    var elem = document.getElementById('input' + i);
+    while (elem !== null) {
+        if (elem.value === '') {
+            elem.value = new_value;
+            return elem;
+        }
+        i++;
+        elem = document.getElementById('input' + i);
+    }
+    return null;
+};
+
+```
+
+
+* var i
+* var elem
+
+```
+var setFirstEmptyInput = function(new_value) {
+    for (var i = 1; true; i++) {
+        var elem = document.getElementById('input' + i);
+        if (elem === null)
+            return null; // Search Failed. No empty input found.
+        if (elem.value === '') {
+            elem.value = new_value;
+            return elem;
+        }
+    }
+};
+
+```
+
+
+
+## 結語
+
+* 消除變數 (儲存**中間結果**的變數)
+* 縮限變數範圍 (將變數移到最少程式碼的可視範圍之內)
+* 儘量使用只寫入一次的變數 (const, final)
+
+
+
+# 第十章
+> 工程就是將大問題分解成小問題，再將小問題的解答組合成原本大問題的解答。
+
+
+## 積極尋找並抽離不相關子問題
+  * 這段程式的主要的目的為何？
+  * 是否與目的有**直接**的關係？或是處理其他所需的**不相關子問題**
+  * 解決特定不相關子問題的行數夠多，抽離成獨立的函數
+
+
+
+## 目錄
+* 純工具程式碼
+* 其他通用程式碼
+* 建立大量通用程式碼
+* 專案專屬功能
+* 簡化既有介面
+* 依需求重塑介面
+* 過猶不及
+* 結語
+
+
+
+## 純工具程式碼
+
+```
+ifstream file(file_name);
+
+// 計算檔案大小，配置緩衝區
+file.seekg(0, ios::end);
+const int file_size = file.tellg();
+char* file_buf = new char [file_size];
+
+// 將整個檔案讀進緩衝區
+file.seekg(0, ios::beg);
+file.read(file_buf, file_size);
+file.close();
+```
+
+
+### 抽出函式
+
+```
+string ReadFileToString(file_name) {
+
+    ifstream file(file_name);
+
+    // 計算檔案大小，配置緩衝區
+    file.seekg(0, ios::end);
+    const int file_size = file.tellg();
+    char* file_buf = new char [file_size];
+
+    // 將整個檔案讀進緩衝區
+    file.seekg(0, ios::beg);
+    file.read(file_buf, file_size);
+    file.close();
+
+    return file_buf;
+}
+```
+
+「如果函式庫有提供 xyz() 函數就好了」
+
+
+
+## 其他通用程式碼
+
+```
+ajax_post({
+    url: 'http://example.com/submit',
+    data: data,
+    on_success: function (response_data) {
+        var str = "{\n";
+        for (var key in response_data) {
+            str += "  " + key + " = " + response_data[key] + "\n";
+        }
+        alert(str + "}");
+
+        // Continue handling 'response_data' ...
+    }
+});
+```
+
+
+### 抽出函式
+
+```
+ajax_post({
+    url: 'http://example.com/submit',
+    data: data,
+    on_success: function (response_data) {
+        alert(format_pretty(response_data));
+        // 繼續處理 'response_data' ...
+    }
+});
+```
+
+```
+var format_pretty = function (obj) {
+    var str = "{\n";
+    for (var key in obj) {
+        str += "  " + key + " = " + obj[key] + "\n";
+    }
+    return str + "}";
+};
+```
+
+
+### 意外的好處
+抽離出來之後更容易改善 format_pretty()
+* 加入新功能
+* 改善可靠度
+* 處理邊界情況
+  * undefined
+  * 巢狀物件
+
+
+### 處理邊界情況
+```
+var format_pretty = function (obj, indent) {
+    // Handle null, undefined, strings, and non-objects.
+    if (obj === null) return "null";
+    if (obj === undefined) return "undefined";
+    if (typeof obj === "string") return '"' + obj + '"';
+    if (typeof obj !== "object") return String(obj);
+    if (indent === undefined) indent = "";
+    // Handle (non-null) objects.
+    var str = "{\n";
+    for (var key in obj) {
+        str += indent + "  " + key + " = ";
+        str += format_pretty(obj[key], indent + "  ") + "\n";
+    }
+    return str + indent + "}";
+};
+```
+
+
+
+## 建立大量通用程式碼
+**完全與其他專案分離**
+
+* folder: util/
+* top-down
+* bottom-up
+
+
+
+## 專案專屬功能
+
+“A.C. Joe’s Tire & Smog, Inc.,” =>  "/biz/ac-joes-tire-smog-inc"
+
+```
+business = Business()
+business.name = request.POST["name"]
+url_path_name = business.name.lower()
+url_path_name = re.sub(r"['\.]", "", url_path_name)
+url_path_name = re.sub(r"[^a-z0-9]+", "-", url_path_name)
+url_path_name = url_path_name.strip("-")
+business.url = "/biz/" + url_path_name
+business.date_created = datetime.datetime.utcnow()
+business.save_to_database()
+```
+
+
+### 抽出函式
+```
+CHARS_TO_REMOVE = re.compile(r"['\.]+")
+CHARS_TO_DASH = re.compile(r"[^a-z0-9]+")
+def make_url_friendly(text):
+    text = text.lower()
+    text = CHARS_TO_REMOVE.sub('', text)
+    text = CHARS_TO_DASH.sub('-', text)
+    return text.strip("-")
+
+business = Business()
+business.name = request.POST["name"]
+business.url = "/biz/" + make_url_friendly(business.name)
+business.date_created = datetime.datetime.utcnow()
+business.save_to_database()
+```
+
+
+### 資料夾
+* util/, helper/, library/
+* 原先相同檔案
+
+<span class="fragment">
+**重要的是 make_url_friendly() 被抽離出來**
+</span>
+
+
+## 簡化既有介面 (包覆函數)
+
+javascript cookie
+
+```
+document.cookie
+// name1=value1; name2=value2; ...
+```
+
+```
+var max_results;
+var cookies = document.cookie.split(';');
+for (var i = 0; i < cookies.length; i++) {
+    var c = cookies[i];
+    c = c.replace(/^[ ]+/, '');  // 移除開頭的空格
+    if (c.indexOf("max_results=") === 0)
+        max_results = Number(c.substring(12, c.length));
+}
+```
+
+包覆函數
+
+```
+var max_results = Number(get_cookie("max_results"));
+```
+
+
+create and update
+
+```
+document.cookie = "max_results=50; expires=Wed, 1 Jan 2020 20:53:47 UTC; path=/";
+```
+
+```
+set_cookie(name, value, days_to_expire);
+```
+
+delete
+
+```
+delete_cookie(name);
+```
+
+<span class="fragment">
+    **「永遠不需要屈就於不夠理想的介面」**
+</span>
+
+
+
+### 依需求重塑介面 (glue)
+
+使用 Cipher 加密資料再附加到 URL 上
+
+```
+user_info = { "username": "...", "password": "..." }
+user_str = json.dumps(user_info)
+cipher = Cipher("aes_128_cbc", key=PRIVATE_KEY, init_vector=INIT_VECTOR, op=ENCODE)
+encrypted_bytes = cipher.update(user_str)
+encrypted_bytes += cipher.final()  # 傾印目前的 128 位元區塊
+url = "http://example.com/?user_info=" + base64.urlsafe_b64encode(encrypted_bytes)
+```
+
+
+### 抽取函式
+
+```
+def url_safe_encrypt(obj):
+    obj_str = json.dumps(obj)
+    cipher = Cipher("aes_128_cbc", key=PRIVATE_KEY, init_vector=INIT_VECTOR, op=ENCODE)
+    encrypted_bytes = cipher.update(obj_str)
+    encrypted_bytes += cipher.final()  # 傾印目前的 128 位元區塊
+    return base64.urlsafe_b64encode(encrypted_bytes)
+
+user_info = { "username": "...", "password": "..." }
+url = "http://example.com/?user_info=" + url_safe_encrypt(user_info)
+```
+
+
+
+## 過猶不及
+
+```
+user_info = { "username": "...", "password": "..." }
+url = "http://example.com/?user_info=" + url_safe_encrypt_obj(user_info)
+def url_safe_encrypt_obj(obj):
+    obj_str = json.dumps(obj)
+    return url_safe_encrypt_str(obj_str)
+def url_safe_encrypt_str(data):
+    encrypted_bytes = encrypt(data)
+    return base64.urlsafe_b64encode(encrypted_bytes)
+def encrypt(data):
+    cipher = make_cipher()
+    encrypted_bytes = cipher.update(data)
+    encrypted_bytes += cipher.final()  # 傾印目前的 128 位元區塊
+    return encrypted_bytes
+def make_cipher():
+    return Cipher("aes_128_cbc", key=PRIVATE_KEY, init_vector=INIT_VECTOR, op=ENCODE)
+```
+
+
+### 原則
+
+1. 做過頭，降低可讀性，閱讀時需要記得更多東西，必須在執行路徑上來回跳躍。
+
+2. 加入新函數得付出微小〈但明確〉的可讀性成本，判斷是否有獲得相對的代價。
+
+3. 若其他地方需要則需要分解出來。
+
+
+
+## 結語
+
+**「分離通用程式碼與專案專屬邏輯」**
+
+* 大部份：通用程式碼。
+
+* 小部份：讓專案與眾不同的程式碼。
+
+專注在與專案其他部份獨立、更小也更明確的小問題。
+
+                    </script>
+                </section>
+
+
+            </div>
+
+        </div>
+
+    <script src="../reveal.js/lib/js/head.min.js"></script>
+    <script src="../reveal.js/js/reveal.js"></script>
+    <script src="../reveal.js/plugin/highlight/highlight.js"></script>
+    <script>
+    // Full list of configuration options available at:
+    // https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        // Optional reveal.js plugins
+        dependencies: [{
+            src: 'lib/js/classList.js',
+            condition: function() {
+                return !document.body.classList;
+            }
+        }, {
+            src: '../reveal.js/plugin/markdown/marked.js',
+            condition: function() {
+                return !!document.querySelector('[data-markdown]');
+            }
+        }, {
+            src: '../reveal.js/plugin/markdown/markdown.js',
+            condition: function() {
+                return !!document.querySelector('[data-markdown]');
+            }
+        }, {
+            src: '../reveal.js/plugin/highlight/highlight.js',
+            async: true,
+            condition: function() {
+                return !!document.querySelector('pre code');
+            },
+            callback: function() {
+                hljs.initHighlightingOnLoad();
+            }
+        }, {
+            src: '../reveal.js/plugin/zoom-js/zoom.js',
+            async: true
+        }, {
+            src: '../reveal.js/plugin/notes/notes.js',
+            async: true
+        }]
+    });
+    </script>
+
+    </body>
+</html>
