@@ -1,10 +1,8 @@
-# SE 好揪團
+# 易讀程式碼之美學 The Art of Readable Code
 
-<http://sehowju.github.io>
+<http://www.books.com.tw/products/0010584840>
 
-## 讀書會
-
-### 易讀程式碼之美學
+## Slide
 
 1. [Ch1 - Ch2, 20151026, Vicki](http://sehowju.github.io/The-Art-of-Readable-Code/Ch1to2.html)
 1. [Ch3 - Ch4, 20151102, Amy](http://sehowju.github.io/The-Art-of-Readable-Code/ch3to4.html)
