@@ -9,16 +9,16 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-    <link rel="stylesheet" href="../reveal.js/css/reveal.css">
-    <link rel="stylesheet" href="../reveal.js/css/theme/black.css" id="theme">
+    <link rel="stylesheet" href="reveal.js/css/reveal.css">
+    <link rel="stylesheet" href="reveal.js/css/theme/black.css" id="theme">
     <!-- Code syntax highlighting -->
-    <link rel="stylesheet" href="../reveal.js/lib/css/zenburn.css">
+    <link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
     <!-- Printing and PDF exports -->
     <script>
     var link = document.createElement('link');
     link.rel = 'stylesheet';
     link.type = 'text/css';
-    link.href = window.location.search.match(/print-pdf/gi) ? '../reveal.js/css/print/pdf.css' : '../reveal.js/css/print/paper.css';
+    link.href = window.location.search.match(/print-pdf/gi) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
     document.getElementsByTagName('head')[0].appendChild(link);
     </script>
     <!--[if lt IE 9]>
@@ -78,7 +78,7 @@ Node* FindNodeInSubtree(Node* subtree, string name, int depth);
 ```
 // 找出有指定 'name' 的 Node 物件或是傳回 NULL 值
 // 如果 depth <= 0 , 只會檢查 'subtree'
-// 如果 depth == N , 只會檢查 'subtree' 以及 N 層內的節點 
+// 如果 depth == N , 只會檢查 'subtree' 以及 N 層內的節點
 Node* FindNodeInSubtree(Node* subtree, string name, int depth);
 ```
 
@@ -141,8 +141,8 @@ void ReleaseRegistryHandle((RegistryKey* Key);
 
 |標記   |意義                 |
 |-------|---------------------|
-|TODO:  |作者還沒處理的部分   |   
-|FIXME: |已知的問題           |   
+|TODO:  |作者還沒處理的部分   |
+|FIXME: |已知的問題           |
 |HACK:  |承認解決方法不夠優雅 |
 |XXX:   |危險!重要問題        |
 
@@ -246,7 +246,7 @@ ex. 天啊，如果串列裡出現重複，情況就會十分棘手<br>
 * 情況  -> 處理輸入資料的程式碼
 * 很棘手 -> 很難實作
 <br>
-=>注意，程式碼無法處理串列中的重複(因為太難實作) 
+=>注意，程式碼無法處理串列中的重複(因為太難實作)
 
 
 
@@ -263,12 +263,12 @@ ex. 天啊，如果串列裡出現重複，情況就會十分棘手<br>
 // int 是 CategoryType
 // pair 中的第一個 float 是 "score",
 // 第二個 float 則是 "權重"
-typedef hash_map<int, pair<float, float>>ScoreMap; 
-``` 
+typedef hash_map<int, pair<float, float>>ScoreMap;
+```
 =>
 ```
 // CategoryType -> (score, weight)
-typedef hash_map<int, pair<float, float>>ScoreMap; 
+typedef hash_map<int, pair<float, float>>ScoreMap;
 ```
 
 
@@ -277,7 +277,7 @@ typedef hash_map<int, pair<float, float>>ScoreMap;
 
 它、這個 意義不明確
 ```
-// 將資料插入串列，並會先檢查 它 是否過大 
+// 將資料插入串列，並會先檢查 它 是否過大
 ```
 =>
 ```
@@ -384,9 +384,9 @@ Birdy Yang
             </section>
         </div>
     </div>
-    <script src="../reveal.js/lib/js/head.min.js"></script>
-    <script src="../reveal.js/js/reveal.js"></script>
-    <script src="../reveal.js/plugin/highlight/highlight.js"></script>
+    <script src="reveal.js/lib/js/head.min.js"></script>
+    <script src="reveal.js/js/reveal.js"></script>
+    <script src="reveal.js/plugin/highlight/highlight.js"></script>
     <script>
     // Full list of configuration options available at:
     // https://github.com/hakimel/reveal.js#configuration
@@ -405,17 +405,17 @@ Birdy Yang
                 return !document.body.classList;
             }
         }, {
-            src: '../reveal.js/plugin/markdown/marked.js',
+            src: 'reveal.js/plugin/markdown/marked.js',
             condition: function() {
                 return !!document.querySelector('[data-markdown]');
             }
         }, {
-            src: '../reveal.js/plugin/markdown/markdown.js',
+            src: 'reveal.js/plugin/markdown/markdown.js',
             condition: function() {
                 return !!document.querySelector('[data-markdown]');
             }
         }, {
-            src: '../reveal.js/plugin/highlight/highlight.js',
+            src: 'reveal.js/plugin/highlight/highlight.js',
             async: true,
             condition: function() {
                 return !!document.querySelector('pre code');
@@ -424,10 +424,10 @@ Birdy Yang
                 hljs.initHighlightingOnLoad();
             }
         }, {
-            src: '../reveal.js/plugin/zoom-js/zoom.js',
+            src: 'reveal.js/plugin/zoom-js/zoom.js',
             async: true
         }, {
-            src: '../reveal.js/plugin/notes/notes.js',
+            src: 'reveal.js/plugin/notes/notes.js',
             async: true
         }]
     });

@@ -9,16 +9,16 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-    <link rel="stylesheet" href="../reveal.js/css/reveal.css">
-    <link rel="stylesheet" href="../reveal.js/css/theme/black.css" id="theme">
+    <link rel="stylesheet" href="reveal.js/css/reveal.css">
+    <link rel="stylesheet" href="reveal.js/css/theme/black.css" id="theme">
     <!-- Code syntax highlighting -->
-    <link rel="stylesheet" href="../reveal.js/lib/css/zenburn.css">
+    <link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
     <!-- Printing and PDF exports -->
     <script>
     var link = document.createElement('link');
     link.rel = 'stylesheet';
     link.type = 'text/css';
-    link.href = window.location.search.match(/print-pdf/gi) ? '../reveal.js/css/print/pdf.css' : '../reveal.js/css/print/paper.css';
+    link.href = window.location.search.match(/print-pdf/gi) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
     document.getElementsByTagName('head')[0].appendChild(link);
     </script>
     <!--[if lt IE 9]>
@@ -232,7 +232,7 @@ if ($document) {
 
 // continue rendering the page ...
 ```
-There are two ways you can be authorized: 
+There are two ways you can be authorized:
 * <span class="fragment">You are an admin</span>
 * <span class="fragment">You own the current document (if there is one)</span>
 
@@ -327,7 +327,7 @@ The most readable code is no code at all.
 
 ## 詢問與分解需求
 範例：商店搜尋系統
-<br><br> 
+<br><br>
 根據使用者目前所在經緯度，找出經緯度最接近的商店
 <br>
 * <span class="fragment">When the locations are on either side of the International Date Line</span>
@@ -407,16 +407,16 @@ unique_elements = list(set([2,1,2]))
 
 Thanks for your attention
 <br><br>
-Vicki Lin 
+Vicki Lin
 <br>
 2016/02/01
                 </script>
             </section>
         </div>
     </div>
-    <script src="../reveal.js/lib/js/head.min.js"></script>
-    <script src="../reveal.js/js/reveal.js"></script>
-    <script src="../reveal.js/plugin/highlight/highlight.js"></script>
+    <script src="reveal.js/lib/js/head.min.js"></script>
+    <script src="reveal.js/js/reveal.js"></script>
+    <script src="reveal.js/plugin/highlight/highlight.js"></script>
     <script>
     // Full list of configuration options available at:
     // https://github.com/hakimel/reveal.js#configuration
@@ -435,17 +435,17 @@ Vicki Lin
                 return !document.body.classList;
             }
         }, {
-            src: '../reveal.js/plugin/markdown/marked.js',
+            src: 'reveal.js/plugin/markdown/marked.js',
             condition: function() {
                 return !!document.querySelector('[data-markdown]');
             }
         }, {
-            src: '../reveal.js/plugin/markdown/markdown.js',
+            src: 'reveal.js/plugin/markdown/markdown.js',
             condition: function() {
                 return !!document.querySelector('[data-markdown]');
             }
         }, {
-            src: '../reveal.js/plugin/highlight/highlight.js',
+            src: 'reveal.js/plugin/highlight/highlight.js',
             async: true,
             condition: function() {
                 return !!document.querySelector('pre code');
@@ -454,10 +454,10 @@ Vicki Lin
                 hljs.initHighlightingOnLoad();
             }
         }, {
-            src: '../reveal.js/plugin/zoom-js/zoom.js',
+            src: 'reveal.js/plugin/zoom-js/zoom.js',
             async: true
         }, {
-            src: '../reveal.js/plugin/notes/notes.js',
+            src: 'reveal.js/plugin/notes/notes.js',
             async: true
         }]
     });

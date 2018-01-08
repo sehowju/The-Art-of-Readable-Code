@@ -9,16 +9,16 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-    <link rel="stylesheet" href="../reveal.js/css/reveal.css">
-    <link rel="stylesheet" href="../reveal.js/css/theme/black.css" id="theme">
+    <link rel="stylesheet" href="reveal.js/css/reveal.css">
+    <link rel="stylesheet" href="reveal.js/css/theme/black.css" id="theme">
     <!-- Code syntax highlighting -->
-    <link rel="stylesheet" href="../reveal.js/lib/css/zenburn.css">
+    <link rel="stylesheet" href="reveal.js/lib/css/zenburn.css">
     <!-- Printing and PDF exports -->
     <script>
     var link = document.createElement('link');
     link.rel = 'stylesheet';
     link.type = 'text/css';
-    link.href = window.location.search.match(/print-pdf/gi) ? '../reveal.js/css/print/pdf.css' : '../reveal.js/css/print/paper.css';
+    link.href = window.location.search.match(/print-pdf/gi) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
     document.getElementsByTagName('head')[0].appendChild(link);
     </script>
     <!--[if lt IE 9]>
@@ -77,7 +77,7 @@ return exponent >= 0 ? mantissa * (1 << exponent) : mantissa / (1 << -exponent);
 if (exponent >= 0) {
 	return mantissa * (1 << exponent);
 } else {
-	return mantissa / (1 << -exponent);	
+	return mantissa / (1 << -exponent);
 }
 ```
 * <span class="fragment highlight-red">mantissa</span> * 2<sup><span class="fragment highlight-blue">exponent</span></sup>
@@ -240,7 +240,7 @@ var y = pageHeight();
 ```
 ```
 var $all_images = $(“img”);
-var page_height = pageHeight(); 
+var page_height = pageHeight();
 ```
 ```
 <div id=“middle_column” class=“main-content”>
@@ -261,16 +261,16 @@ var page_height = pageHeight();
 
 Thanks for your attention
 <br><br>
-Vicki Lin 
+Vicki Lin
 <br>
 2015/10/26
                 </script>
             </section>
         </div>
     </div>
-    <script src="../reveal.js/lib/js/head.min.js"></script>
-    <script src="../reveal.js/js/reveal.js"></script>
-    <script src="../reveal.js/plugin/highlight/highlight.js"></script>
+    <script src="reveal.js/lib/js/head.min.js"></script>
+    <script src="reveal.js/js/reveal.js"></script>
+    <script src="reveal.js/plugin/highlight/highlight.js"></script>
     <script>
     // Full list of configuration options available at:
     // https://github.com/hakimel/reveal.js#configuration
@@ -289,17 +289,17 @@ Vicki Lin
                 return !document.body.classList;
             }
         }, {
-            src: '../reveal.js/plugin/markdown/marked.js',
+            src: 'reveal.js/plugin/markdown/marked.js',
             condition: function() {
                 return !!document.querySelector('[data-markdown]');
             }
         }, {
-            src: '../reveal.js/plugin/markdown/markdown.js',
+            src: 'reveal.js/plugin/markdown/markdown.js',
             condition: function() {
                 return !!document.querySelector('[data-markdown]');
             }
         }, {
-            src: '../reveal.js/plugin/highlight/highlight.js',
+            src: 'reveal.js/plugin/highlight/highlight.js',
             async: true,
             condition: function() {
                 return !!document.querySelector('pre code');
@@ -308,10 +308,10 @@ Vicki Lin
                 hljs.initHighlightingOnLoad();
             }
         }, {
-            src: '../reveal.js/plugin/zoom-js/zoom.js',
+            src: 'reveal.js/plugin/zoom-js/zoom.js',
             async: true
         }, {
-            src: '../reveal.js/plugin/notes/notes.js',
+            src: 'reveal.js/plugin/notes/notes.js',
             async: true
         }]
     });
