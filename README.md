@@ -9,7 +9,9 @@
 1. [Ch1 - Ch2, 20151026, Vicki](http://sehowju.github.io/The-Art-of-Readable-Code/Ch1to2.html)
 1. [Ch3 - Ch4, 20151102, Amy](http://sehowju.github.io/The-Art-of-Readable-Code/Ch1to2.html)
 1. [Ch5 - Ch6, 20151109, Birdy](http://sehowju.github.io/The-Art-of-Readable-Code/Ch5to6.html)
-1. [Ch5 - Ch6, 20151201, Scott](http://sehowju.github.io/The-Art-of-Readable-Code/Ch7to8.html)
+1. [Ch7 - Ch8, 20151201, Scott](http://sehowju.github.io/The-Art-of-Readable-Code/Ch7to8.html)
+1. [Ch9 - Ch10, 20151201, Dino](http://sehowju.github.io/The-Art-of-Readable-Code/Ch9to10.html)
+1. [Ch11 - Ch13, 20151201, Vicki](http://sehowju.github.io/The-Art-of-Readable-Code/Ch11to13.html)
 
 ## Contributing
 
