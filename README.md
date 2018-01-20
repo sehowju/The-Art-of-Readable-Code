@@ -1,5 +1,7 @@
 # 易讀程式碼之美學 The Art of Readable Code
 
+![The Art of Readable Code](http://im1.book.com.tw/image/getImage?i=http://www.books.com.tw/img/001/058/48/0010584840.jpg&v=51767ef1&w=348&h=348)
+
 <http://www.books.com.tw/products/0010584840>
 
 ## Slide
